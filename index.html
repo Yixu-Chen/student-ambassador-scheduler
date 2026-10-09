@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>学生大使团排班助手</title>
+  <meta name="description" content="离线读取成员名单、自动生成月度排班并导出Excel">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">本地离线 · 无需人工智能 · 数据不上传</p>
+      <h1>学生大使团排班助手</h1>
+      <p>上传成员名单，设置月份和限制，一键生成“老人带新人”的月度排班表。</p>
+    </div>
+    <div class="hero-actions">
+      <label class="button primary">上传成员名单 Excel<input id="fileInput" type="file" accept=".xlsx" hidden></label>
+      <button id="demoButton" class="button ghost">载入匿名演示</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="steps" aria-label="使用步骤">
+      <span class="active">1 上传名单</span><span>2 设置班次</span><span>3 设置限制</span><span>4 自动排班</span><span>5 导出 Excel</span>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><div><span class="number">01</span><h2>月份与班次</h2></div><p>默认安排月内所有周六、周日。</p></div>
+      <div class="form-grid">
+        <label>年份<input id="year" type="number" min="2024" max="2100" value="2026"></label>
+        <label>月份<select id="month"></select></label>
+        <label>每班人数<input id="headcount" type="number" min="1" max="6" value="2"></label>
+        <label>上午时间<div class="inline"><input id="amStart" type="time" value="09:00"><span>至</span><input id="amEnd" type="time" value="13:00"></div></label>
+        <label>下午时间<div class="inline"><input id="pmStart" type="time" value="13:00"><span>至</span><input id="pmEnd" type="time" value="17:00"></div></label>
+      </div>
+      <div class="checks"><label><input id="sat" type="checkbox" checked> 周六</label><label><input id="sun" type="checkbox" checked> 周日</label><label><input id="preferMixed" type="checkbox" checked> 优先老人带新人</label><label><input id="preferGroup" type="checkbox" checked> 优先同工作组</label><label><input id="preferCoverage" type="checkbox" checked> 优先覆盖不同成员</label></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><div><span class="number">02</span><h2>人员设置</h2></div><p id="memberSummary">尚未载入名单</p></div>
+      <div class="toolbar"><button id="addMember" class="button small">添加人员</button><button id="caseRule" class="button small">应用“示例老人仅周六下午”</button><button id="resetCounts" class="button small">全部最多一次</button></div>
+      <div class="table-wrap"><table id="memberTable"><thead><tr><th>姓名</th><th>类型</th><th>来源</th><th>工作组</th><th>最低次数</th><th>最多次数</th><th>历史次数</th><th>可排规则</th><th></th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><div><span class="number">03</span><h2>不可上班</h2></div><p>只需记录例外；“全天”会同时屏蔽上午和下午。</p></div>
+      <div class="toolbar"><button id="addBlock" class="button small">添加限制</button></div>
+      <div class="table-wrap"><table id="blockTable"><thead><tr><th>姓名</th><th>日期</th><th>时段</th><th>原因</th><th></th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section class="action-panel">
+      <div><h2>准备好后生成排班</h2><p id="status">所有计算均在当前浏览器中完成。</p></div>
+      <button id="generate" class="button primary large">自动生成排班</button>
+    </section>
+
+    <section id="resultPanel" class="panel hidden">
+      <div class="section-head"><div><span class="number">04</span><h2>排班预览</h2></div><p>可以直接更换下拉框中的人员，再导出。</p></div>
+      <div id="metrics" class="metrics"></div>
+      <div id="warnings" class="warnings"></div>
+      <div id="scheduleWrap" class="schedule-wrap"></div>
+      <div class="export-row"><button id="saveLocal" class="button ghost">保存当前设置</button><button id="exportExcel" class="button primary">导出 Excel 排班表</button></div>
+    </section>
+  </main>
+
+  <footer>离线排班工具 · 原始名单与排班结果仅保存在你的电脑中</footer>
+  <script src="xlsx-lite.js"></script>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
